@@ -2,13 +2,19 @@
 #### This Script defines the data generating function
 #### Author : Adam Elder
 ##############################################################################
-
 library(MASS)
-make.data <- function(sample_size, dim, rho, model = 1){
+
+## Function used to generate simulated data. The
+## function generates ss observations from one of
+## the three data generating mechanism (specified)
+## by model, dim covariates, and rho correlation
+## between each x for the first three figures.  
+
+make.data <- function(ss, dim, rho, model = 1){
   x_cov <- matrix(rho, nrow = dim, ncol = dim)
   diag(x_cov) <- 1
-  X <- mvrnorm(n = sample_size, mu = rep(0, dim), Sigma = x_cov)
-  epsilon <- rnorm(sample_size)
+  X <- mvrnorm(n = ss, mu = rep(0, dim), Sigma = x_cov)
+  epsilon <- rnorm(ss)
   if (model == 1){
     data <- cbind(epsilon, X)
   }
