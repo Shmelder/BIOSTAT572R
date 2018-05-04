@@ -28,7 +28,7 @@ art_find_distr <- function(data, boot.s, lambda = "db", n_db, alpha = FALSE){
     }else{
       lambda_n <- lambda
     }
-    if (lambda_n <= sample_summary[2] & lambda_n <= t_stat){
+    if (lambda_n <= boot_summary[2] & lambda_n <= t_stat){
       boot.distr[boot1_indx] <- sqrt(n.obs) * (boot_summary[1] - thnh)
     }else{
       boot.distr[boot1_indx] <- calc_bbv(boot_data, data, 
