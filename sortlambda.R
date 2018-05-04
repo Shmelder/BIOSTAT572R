@@ -27,8 +27,6 @@ sort_lambda <- function(observations, test_stat){
       step <- step + 1
       }
   }
-  print(step)
-  browser()
   return(ord.obs[step, 1])
 }
 

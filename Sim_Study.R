@@ -3,14 +3,13 @@
 #### Author : Adam Elder
 ##############################################################################
 library(MASS)
-
 ## Function used to generate simulated data. The
 ## function generates ss observations from one of
 ## the three data generating mechanism (specified)
 ## by model, dim covariates, and rho correlation
 ## between each x for the first three figures.  
 
-make.data <- function(ss, dim, rho, model = 1){
+make_data <- function(ss, dim, rho, model = 1){
   x_cov <- matrix(rho, nrow = dim, ncol = dim)
   diag(x_cov) <- 1
   X <- mvrnorm(n = ss, mu = rep(0, dim), Sigma = x_cov)
@@ -27,3 +26,4 @@ make.data <- function(ss, dim, rho, model = 1){
   }
   return(data)
 }
+

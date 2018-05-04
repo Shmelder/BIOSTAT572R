@@ -5,7 +5,7 @@
 ##############################################################################
 library(MASS)
                                      
-art_find_distr <- function(data, boot.s, lambda = "db", n_db){
+art_find_distr <- function(data, boot.s, lambda = "db", n_db, alpha = FALSE){
   n.obs  <- nrow(data)
   n.covs <- ncol(data) - 1 
   sample_summary <- find_max_cor_beta(data, find_sd = TRUE)
@@ -36,19 +36,15 @@ art_find_distr <- function(data, boot.s, lambda = "db", n_db){
                                          resids = resids)
     }
   }
-  return(boot.distr)
-}
-
-art.test <- function(data, boot.s, lambda){
-  n.obs <- nrow(data)
-  test.stat <- sqrt(n.obs) * est_max_t(data, keep.resid = FALSE)$theta_n
-  limit.distr <- art_find_distr_tunegiven(data, boot.s, lambda)
-  z.crit <- quantile(limit.distr, probs = c(0.025, 0.975))
-  print(test.stat)
-  if (test.stat < z.crit[1] | test.stat > z.crit[2]){
-    return(1)
+  if(is.numeric(alpha) == TRUE){
+    quant <- mean(as.numeric(sqrt(n.obs) * thnh > boot.distr))
+    if(quant > (1 - alpha/2 ) | quant < (alpha/2)){
+      return(1)
+    }else{
+      return(0)
+    }
   }else{
-    return(0)
+    return(return(boot.distr))
   }
 }
 
