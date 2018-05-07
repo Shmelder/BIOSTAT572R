@@ -20,7 +20,7 @@ find_max_cor_beta <- function(data, find_sd = FALSE){
     rse <- sum(resids^2)/(ss - 2)
     est <- c(betas[2], betas[2]/sqrt(XTXinv[2, 2] * rse), resids)
   }else{
-    est <- cors[max.k - 1] / sd(data[, max.k])
+    est <- cors[max.k - 1] * sqrt(var(data[, 1]) / var(data[, max.k]))
   }
   return(est)
 }
