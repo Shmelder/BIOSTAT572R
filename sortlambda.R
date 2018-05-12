@@ -27,6 +27,14 @@ sort_lambda <- function(observations, test_stat){
       step <- step + 1
       }
   }
+  if(step == n_obs){
+    ## If the precise quantile where we get 95% acceptance rate cannot
+    ## be found, we find the lambda_n that gives us the value closest 
+    ## to a 95% acceptence rate.  
+    quants <- cumsum(c(mean(ord.cpb), ord.dif))
+    quant.diffs <- c(abs(quants - 0.95), abs(quants - 0.95))
+    step = which.min(quant.diffs) %% n_obs 
+  }
   return(ord.obs[step, 1])
 }
 
