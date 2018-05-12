@@ -1,6 +1,6 @@
 #################################################
 #### This script contains the alternative testing
-#### functions compared to the ART.
+#### functions to be compared to the ART.
 #################################################
 #################################################
 #### Author : Adam Elder
@@ -16,7 +16,7 @@ test.once.bc <- function(data, alpha){
   covs <- ncol(data) - 1
   p_vals <- rep(NA, covs)
   for(jj in 2:(covs + 1)){
-   p_vals[jj] <- summary(lm(data[, 1] ~ data[, jj]))$coefficients[2, 4] 
+   p_vals[jj - 1] <- summary(lm(data[, 1] ~ data[, jj]))$coefficients[2, 4] 
   }
   signif <- as.numeric(p_vals <= alpha/covs)
   return(as.numeric(sum(signif) > 0))

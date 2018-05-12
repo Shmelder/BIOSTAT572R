@@ -11,13 +11,16 @@ find_max_cor_beta <- function(data, find_sd = FALSE){
   cors <- crossprod(s.data[, -1], s.data[, 1])
   max.k <- which.max(abs(cors)) + 1
   if(find_sd == TRUE){
+    # Solve for Beta
     y.vec <- data[, 1]
     TX <- rbind(1, data[, max.k])
     X <- t(TX) 
     XTXinv <- solve(TX %*% X)
     betas <- XTXinv %*% TX %*% y.vec
+    # Find Residuals
     resids <- y.vec - as.numeric(X %*% betas)
     rse <- sum(resids^2)/(ss - 2)
+    # Return Estimate and t statistic
     est <- c(betas[2], betas[2]/sqrt(XTXinv[2, 2] * rse), resids)
   }else{
     est <- cors[max.k - 1] * sqrt(var(data[, 1]) / var(data[, max.k]))

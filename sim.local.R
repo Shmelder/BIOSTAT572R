@@ -17,18 +17,26 @@ gen.data <- function(ss, local, covs){
   x <- mvrnorm(n = ss, mu = rep(0, covs), Sigma = diag(covs) )
   true.beta <- c(local/sqrt(ss), rep(0, covs - length(local)))
   y <- rnorm(ss, sd = 1) + x %*% true.beta
-  return(data.frame("y" = y, "x" = x))
+  return(cbind("y" = y, "x" = x))
 }
 
 gen_est <- function(ss, local, covs){
   obs_data <- gen.data(ss, local, covs)
-  return(find_max_cor_param(obs_data))
+  return(find_max_cor_beta(obs_data, find_sd = FALSE))
 }
 
-get.est <- function(ss, local, covs){
-  obs.data <- gen.data(ss, local, covs)
-  reg <- lm(y ~., data = obs.data)
-  return(which.max(coefficients(reg)[-1]))
+gen_limit_distr <- function(sims, covs){
+  ests <- mvrnorm(n = sims, mu = rep(0, covs), Sigma = diag(covs))
+  distr <- apply(ests, 1, function(x){x[which.max(x^2)]})
+  return(distr)
+}
+
+find_distr_null <- function(sims, ss, covs){
+  distr <- rep(NA, sims)
+  for(i in 1:sims){
+    distr[i] <- sqrt(ss) * gen_est(ss, 0, covs)
+  }
+  return(distr)
 }
 
 find.distr <- function(sims, ss, local, covs, fixed = TRUE){
@@ -99,8 +107,27 @@ make_some_plots_2 <- function(sample_size, sims, fixed = TRUE, pertrb){
   A
 }
 
+make_some_plots_3 <- function(sample_size, sims, covs){
+  limit_distr <-  gen_limit_distr(sims = sims, covs = covs)
+  sample_distr <- find_distr_null(sims = sims, ss = sample_size, covs = covs)
+  dat <- data.frame("val" = c(limit_distr, sample_distr), 
+                    "Generation Method" = rep(c( "Limiting Distribution", "Sampling Distribution"), each = sims))
+  dat <- subset(dat, val <= 5 & -5 <= val)
+  A <- ggplot(dat, aes(x = val, fill = Generation.Method)) + 
+    scale_fill_discrete(name = "Generation Method : ",
+                        labels = c("Limiting Distribution", "Sampling Distribution")) + 
+    geom_density(alpha = .5, position="identity") + 
+    labs(x = "\n Beta", y = "\n Density") + xlim(c(-5 , 5)) + ylim(c(0.0, 0.45)) + 
+    theme_minimal() + theme(legend.position="top", text = element_text(size=20))
+  At
+}
+
+
+
 make_some_plots_2(4000, 5000, fixed = FALSE, 7)
 make_some_plots_2(4000, 5000, fixed = FALSE, 3)
 make_some_plots_2(4000, 5000, fixed = FALSE, 1)
 make_some_plots_2(4000, 5000, fixed = FALSE, 0.5)
 make_some_plots_2(4000, 5000, fixed = FALSE, 0.1)
+
+

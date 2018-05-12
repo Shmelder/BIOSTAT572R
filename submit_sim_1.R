@@ -7,7 +7,7 @@
 #### Author : Adam Elder
 ################################################
 ################################################
-
+#setwd("~/Dropbox/School_UW/2017-2018/Spring 2018/BIOSTAT572/SimulationStudy/BIOSTAT572R")
 source("ART.R")
 source("bbV.R")
 source("findlambda.R")
@@ -24,7 +24,10 @@ dims <- rep(rep(c(10, 50, 100, 150, 200), each = 3), times = 6)
 model <- rep(c(1, 2, 3), times = 30)
 
 simulate_df <- data.frame("rho" = rho, "n" = sample_size,
-                           "dims" = dims, "model" = model) 
+                           "dims" = dims, "model" = model)
+
+simulate_df <- rbind(simulate_df, simulate_df, simulate_df,
+                     simulate_df, simulate_df)
 
 syst.envr <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
@@ -44,8 +47,15 @@ results <- simulate(model = job.settings$model,
                     n     = job.settings$n,
                     dim   = job.settings$dims,
                     rho   = job.settings$rho,
-                    sims  = 1,
+                    sims  = 100,
+                    bs    = 500,
                     alpha = 0.05)
 
+write.csv(results, paste0("simres/n", job.settings$n, 
+                          "mod", job.settings$model,
+                          "dim", job.settings$dim,
+                          "rho", job.settings$rho, 
+                          "iter", floor(job.id/90) + 1, 
+                          ".csv"))
 
 
