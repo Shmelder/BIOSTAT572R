@@ -31,6 +31,11 @@ art_find_distr <- function(data, boot.s, lambda = "db", n_db, alpha = FALSE){
                               n_db = n_db, 
                               boot_resids = boot_summary[-c(1, 2)], 
                               n.obs = n.obs)
+      if (n.obs > 1000){
+        if(boot1_indx %% 100 == 0){
+          cat(boot1_indx, " ")
+        }
+      }
     }else{
       lambda_n <- lambda
     }

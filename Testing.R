@@ -14,7 +14,18 @@ test.once.lr <- function(data, alpha){
 
 test.once.bc <- function(data, alpha){
   covs <- ncol(data) - 1
+  obs <- nrow(data)
   p_vals <- rep(NA, covs)
+  X <- as.matrix(data[, -1])
+  Y <- data[, 1]
+  var_y <- var(Y)
+  cov_xy <- cov(X, Y)
+  sum_x <- colSums(X)
+  x_vars <- apply(data[, -1], 2, var)
+  sum_x_2 <- colSums(X^2)
+  se_betas <- sqrt(var_y/(sum_x_2 - sum_x^2/(obs)))
+  betas <- cov_xy/x_vars
+  t_stats <- abs(betas/se_betas)
   for(jj in 2:(covs + 1)){
    p_vals[jj - 1] <- summary(lm(data[, 1] ~ data[, jj]))$coefficients[2, 4] 
   }
