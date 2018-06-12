@@ -7,6 +7,11 @@
 library(expm)
 library(ggplot2)
 
+
+## The following functions read in all of the .csv
+## files created for a given simulation settings.
+## Each file is the estimated rejection rate.
+
 read_one <- function(params, file_name){
   est_rej <- read.csv(file_name)[,2]
   est_rej <- est_rej[ -length(est_rej)]
@@ -36,6 +41,9 @@ read_params <- function(ss, b, dim, db){
   return(results)
 }
 
+## This is to create a matrix to give all possible combinations
+## of simulation settings. 
+
 local_param <- rep(seq(0, 5, 0.5), times = 6)
 sample_size <- c(rep(5000, 22), rep(10000, 44))
 dims <- c(rep(c(10, 50, 1000, 1000, 1000, 1000), each = 11))
@@ -54,6 +62,8 @@ master_mat <- read_params(ss = settings$sims,
                           b = settings$b_0,
                           dim = settings$dims,
                           db = settings$db)
+## The following matrix contains all simulation
+## results for all simulation settings.
 
 for(i in 2:66){
   settings <- simulate_df[i, ]
@@ -66,17 +76,9 @@ for(i in 2:66){
 
 master_mat$b0 <- as.numeric(as.character(master_mat$b0))
 
-ggplot(subset, aes(x = b0, group = b0, y = rejr)) + geom_boxplot() +
-  geom_point(data = points, colour = "red", alpha = 0.5)
-
-sub_data <- subset(master_mat, dims == 10)
-
-
-
-## This code is used to approximates the rejection 
+## The follwoing code is used to approximates the rejection 
 ## rate for a bonferroni based test to caompare 
 ## to ART
-
 
 source("Sim_Study.R")
 source("Testing.R")

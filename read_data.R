@@ -4,6 +4,14 @@
 #### simulation results.
 #########################################################
 setwd("/Users/adamelder/Dropbox/Spring\ 2018/BIOSTAT572/SimulationStudy/BIOSTAT572R")
+
+## The following function reads in all of the .csv
+## files created for a given simulation settings.
+## Each file is the estimated rejection rate
+## for 100 simulations.  This function averages
+## the estimates from all files with the same
+## simulation settings.
+ 
 read_params <- function(n, mod, dim, rho){
   file_name <- paste0("simres/n", n, "mod", mod, "dim", dim, "rho", rho, "iter")
   for(i in 1:5){
@@ -25,6 +33,9 @@ read_params <- function(n, mod, dim, rho){
   return(round(ave_res, 4))
 }
 
+## This is to create a matrix to give all possible combinations
+## of simulation settings. 
+
 rho <- rep(c(0.8, 0.5, 0), each = 30)
 sample_size <- rep(rep(c(100, 200), each = 15), times = 3)
 dims <- rep(rep(c(10, 50, 100, 150, 200), each = 3), times = 6)
@@ -41,6 +52,7 @@ for( i in 1:nrow(simulate_df)){
                                      rho = simulate_df[i, 1])[c(4, 3, 2, 1)]
 }
 
+## The following function creates a single plot for a given rho, model, and sample size
 single_mod <- function(data, title, xlab, ylab, n_val, mod_val, rho_val, legty = "None", base.s){
   if (mod_val == 1){ylim <- 0.2}else{ylim <- 1}
   if (mod_val == 1){lsize <- 1}else{lsize <- 0}
@@ -77,6 +89,10 @@ single_mod <- function(data, title, xlab, ylab, n_val, mod_val, rho_val, legty =
   
   return(A)
 }
+
+## The following code combines many of the single 
+## plots above into a single plot for a specific
+## value of rho. 
 
 make_rho_plot <- function(data, rho_val, basesize){
   A <- single_mod(data, "Null Model", "", "Rejection Rate (n = 100)",

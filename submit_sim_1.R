@@ -18,6 +18,9 @@ source("sortlambda.R")
 source("Testing.R")
 library(MASS)
 
+## This is to create a matrix to give all possible combinations
+## of simulation settings. 
+
 rho <- rep(c(0.8, 0.5, 0), each = 30)
 sample_size <- rep(rep(c(100, 200), each = 15), times = 3)
 dims <- rep(rep(c(10, 50, 100, 150, 200), each = 3), times = 6)
@@ -26,8 +29,13 @@ model <- rep(c(1, 2, 3), times = 30)
 simulate_df <- data.frame("rho" = rho, "n" = sample_size,
                            "dims" = dims, "model" = model)
 
+## We want to run each setting five times.
 simulate_df <- rbind(simulate_df, simulate_df, simulate_df,
                      simulate_df, simulate_df)
+
+## The following is used so the rscript can be run
+## inside of the cluster, and used different simulation
+## settings. 
 
 syst.envr <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
@@ -42,6 +50,8 @@ job.settings <- simulate_df[job.id, ]
 
 cat("Job ID = ", job.id, "simulation Settings : ")
 print(job.settings)
+
+## Run a single simulation
 
 results <- simulate(model = job.settings$model,
                     n     = job.settings$n,

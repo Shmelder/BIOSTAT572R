@@ -25,6 +25,12 @@ gen_est <- function(ss, local, covs){
   return(find_max_cor_beta(obs_data, find_sd = FALSE))
 }
 
+## The following code is used to generate
+## draws from the limiting distribution
+## under local alternatives.  These 
+## functions are used to approximate
+## power in figures 4 and 5.  
+
 gen_limit_distr <- function(sims, covs){
   ests <- mvrnorm(n = sims, mu = rep(0, covs), Sigma = diag(covs))
   distr <- apply(ests, 1, function(x){x[which.max(x^2)]})
@@ -48,6 +54,11 @@ find.distr <- function(sims, ss, local, covs, fixed = TRUE){
   return(sim_ests)
 }
 
+## This code is used to generate the true
+## sampling distribution to compare to the
+## limiting distribution under local 
+## alternatives. 
+
 est_distr_boot <- function(data, b_s){
   obs <- nrow(data)
   beta_hat <- find_max_cor_param(data)
@@ -59,6 +70,10 @@ est_distr_boot <- function(data, b_s){
   }
   return(boot.distr)
 }
+
+## Code bellow is used to create plots 
+## for my presentation, and can be
+## ignored.
 
 make_some_plots <- function(sample_size, sims, fixed = TRUE, pertrb){
   if(fixed == TRUE){lp = sqrt(sample_size) * pertrb}else{lp = pertrb}
@@ -119,7 +134,7 @@ make_some_plots_3 <- function(sample_size, sims, covs){
     geom_density(alpha = .5, position="identity") + 
     labs(x = "\n Beta", y = "\n Density") + xlim(c(-5 , 5)) + ylim(c(0.0, 0.45)) + 
     theme_minimal() + theme(legend.position="top", text = element_text(size=20))
-  At
+  A
 }
 
 
